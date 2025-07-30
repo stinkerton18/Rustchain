@@ -9,3 +9,6 @@ Thumbs.db
 output/
 *.zip
 *.tar.gz
+source/.vscode/
+source/DOS/.vscode/
+.vscode/settings.json

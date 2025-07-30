@@ -3,8 +3,10 @@
 #include <string.h>
 #include <time.h>
 #include <dos.h>
-#include <fstream.h>
-#include <iostream.h>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <iostream>
 
 /* For WatTCP */
 #include <tcp.h>
@@ -13,13 +15,19 @@
 #define RUST_PORT 8085
 //#define WALLET "a3f5bc8d9e2a1b7c4d6e8f0a2b4c6d8e0f2a4b6cRTC"
 
-string readini() {
+int main() {
+    tcp_Socket sock;
+    char request[1024];
+    char response[512];
+    char json[512];
+    time_t now;
+
     char hexkey[40];
     int i = 0;
     //Open the INI file with the encrypted wallet ID hex values
-    ifstream infile("rstmnr.ini");
-    string wallet;
-    string line;
+    std::ifstream infile("rstmnr.ini");
+    std::string WALLET;
+    std::string line;
 
     if(infile.is_open())
     {
@@ -111,20 +119,10 @@ string readini() {
         infile.close();
     //Now generate the full string from the translated characters in the array
     for (int i = 0; i < 40; ++i) {  
-        wallet += hexkey[i];
+        WALLET += hexkey[i];
     }
     //Finalize and return the wallet ID
-    wallet += "RTC";
-    return wallet;
-}
-#define WALLET = readini();
-
-int main() {
-    tcp_Socket sock;
-    char request[1024];
-    char response[512];
-    char json[512];
-    time_t now;
+    WALLET += "RTC";
     
     printf("RustChain 486 Miner v1.0\n");
     printf("Initializing WatTCP...\n");
@@ -136,7 +134,7 @@ int main() {
         
         if(!tcp_open(&sock, 0, inet_addr(RUST_NODE), RUST_PORT, NULL)) {
             printf("Connection failed!\n");
-            delay(5000);
+            std::this_thread::sleep_for(std::chrono::nanoseconds(5000));
             continue;
         }
         
@@ -187,7 +185,7 @@ int main() {
         
         /* Wait 2 minutes for next block */
         printf("Waiting 120 seconds...\n");
-        delay(120000);
+        std::this_thread::sleep_for(std::chrono::nanoseconds(120000));
     }
     
     return 0;
