@@ -11,4 +11,5 @@ output/
 *.tar.gz
 source/.vscode/
 source/DOS/.vscode/
+source/DOS/development/
 .vscode/settings.json
